@@ -24,6 +24,13 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<WeatherForecastService>();
 
-		return builder.Build();
+
+#if ANDROID
+
+        
+        builder.Services.AddSingleton<ICameraService, CameraService>();
+#endif
+        var app = builder.Build();
+        return app;
 	}
 }
