@@ -1,23 +1,23 @@
 ﻿using System;
 using Android.Hardware.Camera2;
 using Android.Widget;
+using FAA_Project;
+using FAA_Project.Data;
 
 namespace Camera2VideoSample
 {
 	public class MyCameraStateCallback : CameraDevice.StateCallback
 	{
-		Camera2VideoFragment fragment;
-		public MyCameraStateCallback(Camera2VideoFragment frag)
+		CameraService fragment;
+		public MyCameraStateCallback(CameraService frag)
 		{
 			fragment = frag;
 		}
 		public override void OnOpened (CameraDevice camera)
 		{
 			fragment.cameraDevice = camera;
-			fragment.startPreview ();
+			fragment.StartPreview ();
 			fragment.cameraOpenCloseLock.Release ();
-			if (null != fragment.textureView) 
-				fragment.configureTransform (fragment.textureView.Width, fragment.textureView.Height);
 		}
 
 		public override void OnDisconnected (CameraDevice camera)
@@ -32,9 +32,9 @@ namespace Camera2VideoSample
 			fragment.cameraOpenCloseLock.Release ();
 			camera.Close ();
 			fragment.cameraDevice = null;
-			if (null != fragment.Activity) 
-				fragment.Activity.Finish ();
-		}
+			if (null != MainActivity.ActivityCurrent)
+                MainActivity.ActivityCurrent.Finish();
+        }
 
 
 	}

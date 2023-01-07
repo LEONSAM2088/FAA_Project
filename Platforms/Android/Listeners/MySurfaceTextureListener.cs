@@ -1,25 +1,26 @@
-﻿using System;
+﻿/*using System;
 using Android.Views;
 using Android.Graphics;
+using FAA_Project.Data;
 
 namespace Camera2VideoSample
 {
 	public class MySurfaceTextureListener: Java.Lang.Object,TextureView.ISurfaceTextureListener
 	{
-		Camera2VideoFragment fragment;
-		public MySurfaceTextureListener(Camera2VideoFragment frag)
+        CameraService fragment;
+		public MySurfaceTextureListener(CameraService frag)
 		{
 			fragment = frag;
 		}
 
 		public void OnSurfaceTextureAvailable(SurfaceTexture surface_texture,int width, int height)
 		{
-			fragment.openCamera (width,height);
+			fragment.OpenCamera (width,height);
 		}
 
 		public void OnSurfaceTextureSizeChanged(SurfaceTexture surface_texture, int width, int height)
 		{
-			fragment.configureTransform (width, height);
+			fragment.ConfigureTransform (width, height);
 		}
 
 		public bool OnSurfaceTextureDestroyed(SurfaceTexture surface_texture)
@@ -34,3 +35,4 @@ namespace Camera2VideoSample
 	}
 }
 
+*/

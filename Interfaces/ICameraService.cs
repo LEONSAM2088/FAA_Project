@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FAA_Project
-{
+namespace FAA_Project { 
     public interface ICameraService
     {
         public void OpenCamera();

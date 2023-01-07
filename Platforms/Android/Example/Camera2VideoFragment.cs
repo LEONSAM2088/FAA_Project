@@ -1,4 +1,4 @@
-﻿
+﻿/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -426,3 +426,4 @@ namespace Camera2VideoSample
 	}
 }
 
+*/
