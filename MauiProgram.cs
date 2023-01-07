@@ -26,7 +26,7 @@ public static class MauiProgram
 
 
 #if ANDROID
-        builder.Services.AddSingleton<ICameraService, CameraService>();
+        builder.Services.AddSingleton<ICameraService, Camera2VideoFragment>();
 #endif
         var app = builder.Build();
         return app;

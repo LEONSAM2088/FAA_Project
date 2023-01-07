@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,9 +37,10 @@ using Camera2VideoSample;
 
 namespace FAA_Project.Data
 {
-    [Service]
-    public class CameraService : Service, ICameraService
+    
+    public class CameraService : ICameraService
     {
+        private SparseIntArray ORIENTATIONS = new SparseIntArray();
         private const string TAG = "Camera2VideoFragment";
         public static CameraService Camera_service;
         private CaptureRequest.Builder previewBuilder;
@@ -58,23 +59,17 @@ namespace FAA_Project.Data
 
         public CameraService()
         {
-            Intent startService = new Intent(MainActivity.ActivityCurrent, typeof(CameraService));
-            startService.SetAction("START_SERVICE");
-            
-            MainActivity.ActivityCurrent.StartService(startService);
-
-        }
-        [return: GeneratedEnum]
-        public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
-        {
-            _cameraManager = (CameraManager)GetSystemService(CameraService);
+            ORIENTATIONS.Append((int)SurfaceOrientation.Rotation0, 90);
+            ORIENTATIONS.Append((int)SurfaceOrientation.Rotation90, 0);
+            ORIENTATIONS.Append((int)SurfaceOrientation.Rotation180, 270);
+            ORIENTATIONS.Append((int)SurfaceOrientation.Rotation270, 180);
+            _cameraManager = (CameraManager)MainActivity.ActivityCurrent.GetSystemService("camera");
             cameraIds = _cameraManager.GetCameraIdList();
 
 
             Camera_service = this;
             stateListener = new MyCameraStateCallback(this);
             IsBound = true;
-            return base.OnStartCommand(intent, flags, startId);
         }
         
         
@@ -144,7 +139,7 @@ namespace FAA_Project.Data
 
         public void StartPreview()
         {
-            if (null == cameraDevice || null == previewSize)
+            if (null == cameraDevice)
                 return;
 
             try
@@ -152,7 +147,7 @@ namespace FAA_Project.Data
                 SetUpMediaRecorder();
                 SurfaceTexture texture = new(3);
                 //Assert.IsNotNull(texture);
-                texture.SetDefaultBufferSize(previewSize.Width, previewSize.Height);
+                texture.SetDefaultBufferSize(640, 480);
                 previewBuilder = cameraDevice.CreateCaptureRequest(CameraTemplate.Record);
                 var surfaces = new List<Surface>();
                 var previewSurface = new Surface(texture);
@@ -203,16 +198,15 @@ namespace FAA_Project.Data
 
             mMediaRecorder.SetVideoSource(VideoSource.Surface);
             mMediaRecorder.SetOutputFormat(OutputFormat.Mpeg4);
-            mCurrentFile = new Java.IO.File(Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim), "test.mp4");
-            mMediaRecorder.SetOutputFile(mCurrentFile.AbsolutePath);
-
-            var encoderProfiles = CamcorderProfile.GetAll(cameraIds[0], (int)CamcorderQuality.Q480p);
-            var profile = encoderProfiles.VideoProfiles.FirstOrDefault();
-
-            mMediaRecorder.SetVideoFrameRate(profile.FrameRate);
-            mMediaRecorder.SetVideoSize(profile.Width, profile.Height);
-            mMediaRecorder.SetVideoEncodingBitRate(profile.Bitrate);
+            mMediaRecorder.SetOutputFile(GetVideoFile(MainActivity.ActivityCurrent).AbsolutePath);
+            mMediaRecorder.SetVideoEncodingBitRate(10000000);
+            mMediaRecorder.SetVideoFrameRate(30);
+            mMediaRecorder.SetVideoSize(640, 480);
             mMediaRecorder.SetVideoEncoder(VideoEncoder.H264);
+            int rotation = (int)MainActivity.ActivityCurrent.WindowManager.DefaultDisplay.Rotation;
+            int orientation = ORIENTATIONS.Get(rotation);
+            mMediaRecorder.SetOrientationHint(orientation);
+            
 
             try
             {
@@ -225,7 +219,12 @@ namespace FAA_Project.Data
 
 
         }
-
+        private File GetVideoFile(Context context)
+        {
+            string fileName = "video-" + DateTime.Now.ToString("yymmdd-hhmmss") + ".mp4"; //new filenamed based on date time
+            File file = new File(context.GetExternalFilesDir(null), fileName);
+            return file;
+        }
 
 
 
@@ -240,9 +239,7 @@ namespace FAA_Project.Data
             Log.Error(TAG, "Couldn't find any suitable video size");
             return choices[choices.Length - 1];
         }
-        public override IBinder OnBind(Intent intent)
-        {
-            return null;
-        }
+    
     }
 }
+*/

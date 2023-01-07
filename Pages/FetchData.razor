@@ -2,7 +2,7 @@
 
 @using FAA_Project.Data
 @inject WeatherForecastService ForecastService
-@inject ICameraService CameraService
+
 
 <h1>Weather forecast</h1>
 
@@ -42,7 +42,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        CameraService.OpenCamera();
+      
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
     }
 }

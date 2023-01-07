@@ -22,8 +22,7 @@ namespace FAA_Project;
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
-    public HandlerThread backgroundThread;
-    public Handler backgroundHandler;
+   
 
     public static MainActivity ActivityCurrent { get; set; }
     public MainActivity()
@@ -50,36 +49,45 @@ public class MainActivity : MauiAppCompatActivity
     }
     protected override void OnPause()
     {
-        if (Data.CameraService.IsBound)
-            FAA_Project.Data.CameraService.Camera_service.CloseCamera();
-        StopBackgroundThread();
+        if (Camera2VideoFragment.IsBound)
+        {
+           
+            FAA_Project.Camera2VideoFragment.Camera_service.CloseCamera();
+            
+        }
+            
         base.OnPause();
     }
-
+    
     protected override void OnResume()
     {
         base.OnResume();
-        StartBackgroundThread();
-        if(Data.CameraService.IsBound)
-            FAA_Project.Data.CameraService.Camera_service.OpenCamera();
-    }
-  
-    
-    private void StartBackgroundThread()
-    {
-        backgroundThread = new HandlerThread("CameraBackground");
-        backgroundThread.Start();
-        backgroundHandler = new Handler(backgroundThread.Looper);
+
+        if (Camera2VideoFragment.IsBound)
+        {
+
+            
+            Camera2VideoFragment.Camera_service.OpenCamera(640, 480);
+        }
     }
 
-    private void StopBackgroundThread()
+
+    public void StartBackgroundThread()
     {
-        backgroundThread.QuitSafely();
+        Camera2VideoFragment.Camera_service.backgroundThread = new HandlerThread("CameraBackground");
+        Camera2VideoFragment.Camera_service.backgroundThread.Start();
+        Camera2VideoFragment.Camera_service.backgroundHandler = new Handler(Camera2VideoFragment.Camera_service.backgroundThread.Looper);
+
+    }
+
+    public void StopBackgroundThread()
+    {
+        Camera2VideoFragment.Camera_service.backgroundThread.QuitSafely();
         try
         {
-            backgroundThread.Join();
-            backgroundThread = null;
-            backgroundHandler = null;
+            Camera2VideoFragment.Camera_service.backgroundThread.Join();
+            Camera2VideoFragment.Camera_service.backgroundThread = null;
+            Camera2VideoFragment.Camera_service.backgroundHandler = null;
         }
         catch (InterruptedException e)
         {

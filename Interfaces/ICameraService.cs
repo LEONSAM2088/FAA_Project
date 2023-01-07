@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace FAA_Project { 
     public interface ICameraService
     {
-        public void OpenCamera();
+        public void OpenCamera(int width, int height);
+        public void OnClick();
     }
 }

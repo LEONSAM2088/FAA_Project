@@ -1,16 +1,26 @@
 ﻿@page "/counter"
-
+@inject ICameraService CameraService
 <h1>Counter</h1>
 
 <p role="status">Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-
+<button class="btn btn-primary" @onclick="Video">Video</button>
 @code {
     private int currentCount = 0;
 
+    
+
     private void IncrementCount()
     {
+       
+        CameraService.OpenCamera(640, 480);
+        currentCount++;
+    }
+    private void Video()
+    {
+
+        CameraService.OnClick();
         currentCount++;
     }
 }
