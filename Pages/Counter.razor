@@ -9,13 +9,17 @@
 @code {
     private int currentCount = 0;
 
-    
+    protected override async Task OnInitializedAsync()
+    {
+        CameraService.OpenCamera(640, 480);
+        currentCount++;
+       
+    }
 
     private void IncrementCount()
     {
        
-        CameraService.OpenCamera(640, 480);
-        currentCount++;
+        
     }
     private void Video()
     {

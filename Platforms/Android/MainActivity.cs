@@ -52,7 +52,7 @@ public class MainActivity : MauiAppCompatActivity
         if (Camera2VideoFragment.IsBound)
         {
            
-            FAA_Project.Camera2VideoFragment.Camera_service.CloseCamera();
+           Camera2VideoFragment.Camera_service.CloseCamera();
             
         }
             
