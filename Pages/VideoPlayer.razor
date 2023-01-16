@@ -2,13 +2,12 @@
 
 @inject ICameraService service
 @inject IMyService serv;
-<h3>VideoPlayer</h3>
-
-<video controls width="300" @onended=VideoEnded @onplay=Start @oncanplay=OpenCamera>
-
+<video class="video" controls @onended=VideoEnded @onplay=Start @oncanplay=OpenCamera>
     <source src="https://archive.org/download/kratos_202301/kratos.mp4" type="video/mp4">
 </video>
-<p>@service.Emotion</p>
+
+<p class="emotion">@service.Emotion</p>
+
 @code {
     bool opened = false;
     protected override void OnInitialized()
@@ -21,7 +20,7 @@
     {
 
         service.OnClick();
-        service.Emotion = "Loading...";
+        service.Emotion = "Видео обрабатывается...";
     }
     void Start()
     {
@@ -37,3 +36,28 @@
         
     }
 }
+
+<style>
+    .video{
+        width: 100%;
+        border-radius:20px;
+    }
+    .emotion {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 250px;
+        height: 50px;
+        background: #00FFF0;
+        box-shadow: 0px 0px 70px #00FFF0;
+        border-radius: 20px;
+        font-family: 'Play';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 3vw;
+        line-height: 28px;
+        text-align: center;
+        color: black;
+    }
+
+</style>

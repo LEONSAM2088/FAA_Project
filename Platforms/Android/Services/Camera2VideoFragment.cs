@@ -44,7 +44,7 @@ namespace FAA_Project
         private const string TAG = "Camera2VideoFragment";
         private SparseIntArray ORIENTATIONS = new SparseIntArray();
 
-        public string Emotion { get; set; } = "Hmmm...";
+        public string Emotion { get; set; } = "Тут будет результат";
 
 
 
@@ -318,12 +318,7 @@ namespace FAA_Project
             File file = new File(Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim), fileName);
             return file;
         }
-        private async Task<byte[]> GetVideoFile1()
-        {
-            string fileName = "video-1.mp4"; //new filenamed based on date time
-            string afaf = Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim) +"/"+ fileName;
-            return await System.IO.File.ReadAllBytesAsync(afaf);
-        }
+        
         private void StartRecordingVideo()
         {
             try

@@ -60,7 +60,7 @@ namespace FAA_Project.Platforms.Android.Services
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
-                return "hmm....";
+                return "Перезапусти приложение, по-братски";
             }
             
         }
