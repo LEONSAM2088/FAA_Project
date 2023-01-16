@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using FAA_Project.Data;
+using FAA_Project.Interfaces;
 #if ANDROID
 using FAA_Project.Platforms.Android.Services;
 #endif
@@ -30,7 +31,7 @@ public static class MauiProgram
 #if ANDROID
         builder.Services.AddSingleton<RestService>();
         builder.Services.AddSingleton<ICameraService, Camera2VideoFragment>();
-        
+        builder.Services.AddSingleton<IMyService, RefreshService>();
 #endif
         var app = builder.Build();
         return app;

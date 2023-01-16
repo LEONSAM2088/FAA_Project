@@ -1,0 +1,39 @@
+﻿@page "/media-player"
+
+@inject ICameraService service
+@inject IMyService serv;
+<h3>VideoPlayer</h3>
+
+<video controls width="300" @onended=VideoEnded @onplay=Start @oncanplay=OpenCamera>
+
+    <source src="https://archive.org/download/kratos_202301/kratos.mp4" type="video/mp4">
+</video>
+<p>@service.Emotion</p>
+@code {
+    bool opened = false;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        serv.RefreshRequested += StateHasChanged;
+    }
+    void VideoEnded()
+    {
+
+        service.OnClick();
+        service.Emotion = "Loading...";
+    }
+    void Start()
+    {
+        service.OnClick();
+    }
+    void OpenCamera()
+    {
+        if (!opened)
+        {
+            service.OpenCamera(640, 480);
+            opened = true;
+        }
+        
+    }
+}

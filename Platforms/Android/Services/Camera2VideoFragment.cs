@@ -34,6 +34,8 @@ using Button = Android.Widget.Button;
 using System.Runtime.CompilerServices;
 using Environment = Android.OS.Environment;
 using FAA_Project.Platforms.Android.Services;
+using FAA_Project.Pages;
+using FAA_Project.Interfaces;
 
 namespace FAA_Project
 {
@@ -42,9 +44,9 @@ namespace FAA_Project
         private const string TAG = "Camera2VideoFragment";
         private SparseIntArray ORIENTATIONS = new SparseIntArray();
 
-      
+        public string Emotion { get; set; } = "Hmmm...";
 
-        
+
 
         public CameraDevice cameraDevice;
         public CameraCaptureSession previewSession;
@@ -72,10 +74,11 @@ namespace FAA_Project
         public HandlerThread backgroundThread;
         public Handler backgroundHandler;
 
-
-        public Camera2VideoFragment(RestService restService)
+        public readonly IMyService _refreshService;
+        public Camera2VideoFragment(RestService restService, IMyService refreshService)
         {
             _restService = restService;
+            _refreshService = refreshService;
             ORIENTATIONS.Append((int)SurfaceOrientation.Rotation0, 90);
             ORIENTATIONS.Append((int)SurfaceOrientation.Rotation90, 0);
             ORIENTATIONS.Append((int)SurfaceOrientation.Rotation180, 270);
@@ -311,11 +314,16 @@ namespace FAA_Project
 
         private File GetVideoFile(Context context)
         {
-            string fileName = "video-1.mp4"; //new filenamed based on date time
+            string fileName = "video.mp4"; //new filenamed based on date time
             File file = new File(Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim), fileName);
             return file;
         }
-
+        private async Task<byte[]> GetVideoFile1()
+        {
+            string fileName = "video-1.mp4"; //new filenamed based on date time
+            string afaf = Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDcim) +"/"+ fileName;
+            return await System.IO.File.ReadAllBytesAsync(afaf);
+        }
         private void StartRecordingVideo()
         {
             try
@@ -343,19 +351,12 @@ namespace FAA_Project
                 Toast.MakeText(MainActivity.ActivityCurrent, "Video saved: " + GetVideoFile(MainActivity.ActivityCurrent),
                     ToastLength.Short).Show();
             }
-
-            try
-            {
-                byte[] items = await System.IO.File.ReadAllBytesAsync(GetVideoFile(MainActivity.ActivityCurrent).AbsolutePath);
-
-                await _restService.SaveVideoAsync(items);
-            }
-            catch(IOException e) 
-            { 
+            
+           
             
             
-            }
-
+            //await _restService.SaveVideoAsync(items2, true);
+            
 
             //Stop recording
             /*
@@ -367,6 +368,10 @@ namespace FAA_Project
             mediaRecorder.Reset();
             // Workaround for https://github.com/googlesamples/android-Camera2Video/issues/2
             CloseCamera();
+
+            byte[] items = await System.IO.File.ReadAllBytesAsync(GetVideoFile(MainActivity.ActivityCurrent).AbsolutePath);
+            Emotion = await _restService.SaveVideoAsync(items, true);
+            _refreshService.CallRequestRefresh();
             OpenCamera(640, 480);
         }
 

@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using GoogleGson;
 
 namespace FAA_Project.Platforms.Android.Services
 {
@@ -25,20 +29,52 @@ namespace FAA_Project.Platforms.Android.Services
             };
         }
 
-        public async Task SaveVideoAsync(byte[] item, bool isNewItem = false)
+        public async Task<string> SaveVideoAsync(byte[] item, bool isNewItem = false)
         {
-            Uri uri = new Uri(string.Format(Constants.RestUrl, string.Empty));
-
+           
+            Uri uri = new Uri(string.Format(Constants.RestUrl));
+            var asd = new Video();
+            asd.file = item;
+            asd.video_name = "kratos.mp4";
             try
             {
-                string json = JsonSerializer.Serialize<byte[]> (item, _serializerOptions);
-                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                using (var multipartFormContent = new MultipartFormDataContent())
+                {
+                    var byteArrayContent = new ByteArrayContent(asd.file);
+                    var stringContent = new StringContent(asd.video_name);
+
+                    //Add the file
+                    multipartFormContent.Add(byteArrayContent, name: "file", fileName: "kratos.mp4");
+                    multipartFormContent.Add(stringContent, name: "video_name");
+                    //Send it
+                    var response = await _client.PostAsync(uri, multipartFormContent);
+                    response.EnsureSuccessStatusCode();
+                    var jsonString = await response.Content.ReadAsStringAsync();
+
+                    JObject parsedJson = JObject.Parse(jsonString);
+                    string mainEmotion = (string)parsedJson["main_emotion"];
+                    
+                    return mainEmotion;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                return "hmm....";
+            }
+            
+        }
+
+        public async Task Test()
+        {
+            
+            try
+            {
+               
 
                 HttpResponseMessage response = null;
-                if (isNewItem)
-                    response = await _client.PostAsync(uri, content);
-                else
-                    response = await _client.PutAsync(uri, content);
+              
+                    response = await _client.GetAsync("https://e2f7-93-100-197-241.eu.ngrok.io/video/name/9bZkp7q19f0");
 
                 if (response.IsSuccessStatusCode)
                     Debug.WriteLine(@"\tTodoItem successfully saved.");
